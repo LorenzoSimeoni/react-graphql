@@ -1,5 +1,7 @@
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom";
+import { Coloc } from "./Coloc";
+import { ColocForm } from "./ColocForm";
 
 export class App extends React.Component {
   state = {
@@ -9,45 +11,32 @@ export class App extends React.Component {
       { id: 3, name: "Baptiste" },
       { id: 4, name: "Cyril" },
       { id: 5, name: "Fabiola" }
-    ],
-    newColoc: 'Jeanne'
+    ]
   };
 
-  deleteColoc = (i) => {
-    const colocs = this.state.colocs.slice();
-    colocs.splice(i, 1);
-    this.setState({ colocs: colocs });
+  handleDelete = (id) => {
+    const colocs = [...this.state.colocs];
+    colocs.splice(colocs.findIndex(coloc => id === coloc.id), 1);
+    this.setState({ colocs });
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    const colocs = this.state.colocs.slice();
-    colocs.push({ id: (new Date()).getTime(), name: this.state.newColoc });
-    this.setState({ colocs: colocs, newColoc: '' });
+  handleAdd = name => {
+    const colocs = [...this.state.colocs];
+    colocs.push({ id: (new Date()).getTime(), name: name });
+    this.setState({ colocs });
   };
-
-  handleChange = event => {
-    const newColoc = event.currentTarget.value;
-    this.setState({ newColoc: newColoc });
-  }
 
   render() {
     const title = "Liste de colocs";
-    const elements = this.state.colocs.map((coloc, i) => (
-      <li key={i}>
-        {coloc.name}
-        <button onClick={() => this.deleteColoc(i)}>X</button>
-      </li>
+    const elements = this.state.colocs.map(coloc => (
+      <Coloc details={coloc} onDelete={this.handleDelete}></Coloc>
     ));
     return (
       <div>
         <h1>{title}</h1>
         <ul>
           {elements}
-          <form onSubmit={this.handleSubmit}>
-            <input value={this.state.newColoc} onChange={this.handleChange} type="text" placeholder="Ajouter un coloc" />
-            <button>Confirmer</button>
-          </form>
+          <ColocForm onClientAdd={this.handleAdd}></ColocForm>
         </ul>
       </div>
     );
