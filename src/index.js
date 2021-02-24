@@ -9,7 +9,8 @@ export class App extends React.Component {
       { id: 3, name: "Baptiste" },
       { id: 4, name: "Cyril" },
       { id: 5, name: "Fabiola" }
-    ]
+    ],
+    newColoc: 'Jeanne'
   };
 
   deleteColoc = (i) => {
@@ -18,16 +19,17 @@ export class App extends React.Component {
     this.setState({ colocs: colocs });
   };
 
-  addColoc = () => {
-    const colocs = this.state.colocs.slice();
-    colocs.push({ id: 6, name: "random" });
-    this.setState({ colocs: colocs });
-  };
-
   handleSubmit = event => {
     event.preventDefault();
-    console.log("submit");
+    const colocs = this.state.colocs.slice();
+    colocs.push({ id: (new Date()).getTime(), name: this.state.newColoc });
+    this.setState({ colocs: colocs, newColoc: '' });
   };
+
+  handleChange = event => {
+    const newColoc = event.currentTarget.value;
+    this.setState({ newColoc: newColoc });
+  }
 
   render() {
     const title = "Liste de colocs";
@@ -43,8 +45,8 @@ export class App extends React.Component {
         <ul>
           {elements}
           <form onSubmit={this.handleSubmit}>
-            <input type="text" placeholder="Ajouter un coloc" />
-            <button onClick={this.addColoc}>Confirmer</button>
+            <input value={this.state.newColoc} onChange={this.handleChange} type="text" placeholder="Ajouter un coloc" />
+            <button>Confirmer</button>
           </form>
         </ul>
       </div>
